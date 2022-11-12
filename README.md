@@ -4,7 +4,6 @@
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/beier/filament-pages.svg?style=flat-square)](https://packagist.org/packages/beier/filament-pages)
 [![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/pascalebeier/filament-pages/run-tests?label=tests)](https://github.com/beier/filament-pages/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/pascalebeier/filament-pages/Check%20&%20fix%20styling?label=code%20style)](https://github.com/beier/filament-pages/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
 [![Total Downloads](https://img.shields.io/packagist/dt/beier/filament-pages.svg?style=flat-square)](https://packagist.org/packages/beier/filament-pages)
 
 
