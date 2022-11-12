@@ -1,60 +1,58 @@
 {
-    "name": ":vendor_slug/:package_slug",
-    "description": ":package_description",
+    "name": "beier/filament-pages",
+    "description": "Highly opinionated Pages for filament",
     "keywords": [
-        ":vendor_name",
+        "filament",
         "laravel",
-        ":package_slug"
+        "filament-pages"
     ],
-    "homepage": "https://github.com/:vendor_slug/:package_slug",
+    "homepage": "https://github.com/pascalebeier/filament-pages",
+    "support": {
+        "issues": "https://github.com/pascalebeier/filament-pages/issues",
+        "source": "https://github.com/pascalebeier/filament-pages"
+    },
     "license": "MIT",
     "authors": [
         {
-            "name": ":author_name",
-            "email": "author@domain.com",
+            "name": "Pascale Beier",
+            "email": "mail@pascalebeier.de",
             "role": "Developer"
         }
     ],
     "require": {
-        "php": "^8.0",
+        "php": "^8.1",
         "filament/filament": "^2.0",
         "spatie/laravel-package-tools": "^1.13.5",
-        "illuminate/contracts": "^9.0"
+        "illuminate/contracts": "^9.0 || ^10.0"
     },
     "require-dev": {
-        "laravel/pint": "^1.0",
+        "laravel/pint": "^1.2",
         "nunomaduro/collision": "^6.0",
-        "nunomaduro/larastan": "^2.0.1",
         "orchestra/testbench": "^7.0",
         "pestphp/pest": "^1.21",
         "pestphp/pest-plugin-laravel": "^1.1",
         "pestphp/pest-plugin-livewire": "^1.0",
         "pestphp/pest-plugin-parallel": "^0.3",
-        "phpstan/extension-installer": "^1.1",
-        "phpstan/phpstan-deprecation-rules": "^1.0",
-        "phpstan/phpstan-phpunit": "^1.0",
         "phpunit/phpunit": "^9.5",
         "spatie/laravel-ray": "^1.26"
     },
     "autoload": {
         "psr-4": {
-            "VendorName\\Skeleton\\": "src",
-            "VendorName\\Skeleton\\Database\\Factories\\": "database/factories"
+            "Beier\\FilamentPages\\": "src"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "VendorName\\Skeleton\\Tests\\": "tests"
+            "Beier\\FilamentPages\\Tests\\": "tests"
         }
     },
     "scripts": {
-        "pint": "vendor/bin/pint",
-        "test:pest": "vendor/bin/pest --parallel",
-        "test:phpstan": "vendor/bin/phpstan analyse",
+        "test:pest": "vendor/bin/pest --parallel --no-coverage",
         "test": [
             "@test:pest",
             "@test:phpstan"
-        ]
+        ],
+        "fix": "vendor/bin/pint"
     },
     "config": {
         "sort-packages": true,
@@ -67,11 +65,8 @@
     "extra": {
         "laravel": {
             "providers": [
-                "VendorName\\Skeleton\\SkeletonServiceProvider"
-            ],
-            "aliases": {
-                "Skeleton": "VendorName\\Skeleton\\Facades\\Skeleton"
-            }
+                "Beier\\FilamentPages\\FilamentPagesServiceProvider"
+            ]
         }
     },
     "minimum-stability": "dev",
