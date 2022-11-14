@@ -5,7 +5,6 @@ namespace Beier\FilamentPages\Filament\FilamentPageTemplates;
 use Beier\FilamentPages\Contracts\FilamentPageTemplate;
 use Filament\Forms\Components\Card;
 use Filament\Forms\Components\MarkdownEditor;
-use Filament\Forms\Components\RichEditor;
 use Filament\Forms\Components\TextInput;
 
 final class BlogTemplate implements FilamentPageTemplate

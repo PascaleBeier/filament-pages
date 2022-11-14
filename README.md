@@ -250,9 +250,16 @@ Your template will appear in the Template Selection and render your schema accor
 
 #### Customizing the Page Resource
 
-You will find most common configuration options in the config file.
+The recommended way of extending the Page Resource is overriding
 
-To customize every aspect of the Page Resource, you will need to create your own PageResource class, extending `Beier\FilamentPages\Filament\Resources\FilamentPageResource`:
+- `FilamentPageResource::insertBeforePrimaryColumnSchema`
+- `FilamentPageResource::insertAfterPrimaryColumnSchema`
+- `FilamentPageResource::insertBeforeSecondaryColumnSchema`
+- `FilamentPageResource::insertAfterSecondaryColumnSchema`
+
+in your own PageResource class, extending `Beier\FilamentPages\Filament\Resources\FilamentPageResource`.
+
+You will find most common configuration options in the config file.
 
 ```php
 <?php
@@ -262,26 +269,78 @@ namespace App\Filament\Resources;
 use Beier\FilamentPages\Filament\Resources\FilamentPageResource;
 use Filament\Resources\Form;
 use Filament\Resources\Table;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\TextInput;
 
 class PageResource extends FilamentPageResource
 {
-    public static function form(Form $form): Form
+    /**
+     * Recommended: Insert Fields at the beginning of the primary column.
+     */
+    public static function insertBeforePrimaryColumnSchema(): array
+    {
+
+        return [
+            Toggle::make('is_homepage'),
+        ];
+    }
+    
+    /**
+     * Recommended: Insert Fields at the end of the primary column.
+     */
+    public static function insertAfterPrimaryColumnSchema(): array
+    {
+
+        return [
+            TextInput::make('author'),
+        ];
+    }
+    
+    /**
+     * Recommended: Insert Fields at the beginning of the secondary column. (sidebar)
+     */
+    public static function insertBeforeSecondaryColumnSchema(): array
+    {
+
+        return [
+            Toggle::make('is_homepage'),
+        ];
+    }
+    
+    /**
+     * Recommended: Insert Fields at the end of the secondary column. (sidebar)
+     */
+    public static function insertAfterSecondaryColumnSchema(): array
+    {
+
+        return [
+            SEO::make(),
+        ];
+    }
+
+    /**
+     * Not Recommended: Override the whole form
+     */
+   /** public static function form(Form $form): Form
     {
 
         return $form
             ->schema([
                 //
             ]);
-    }
+    } */
     
-    public static function table(Table $table): Table
+    /**
+     * Not Recommended: Override the whole table
+     */
+    /** public static function table(Table $table): Table
     {
 
         return $table
             ->columns([
                 //
             ]);
-    }
+    } */
 }
 ```
 
@@ -300,6 +359,65 @@ return [
 
 ```
 
+## Examples
+
+### Usage with [laravel-filament-seo](https://github.com/ralphjsmit/laravel-filament-seo)
+
+1. Create `app/Models/FilamentPage.php`
+    ```php
+    <?php
+    
+    namespace App\Models;
+    
+    use Beier\FilamentPages\Models\FilamentPage as BeierFilamentPage;
+    use RalphJSmit\Laravel\SEO\Support\HasSEO;
+    use RalphJSmit\Laravel\SEO\Support\SEOData;
+    
+    class FilamentPage extends BeierFilamentPage
+    {
+        use HasSEO;
+    
+        public function getDynamicSEOData(): SEOData
+        {
+            return new SEOData(
+                title: $this->title,
+            );
+        }
+    
+    }
+    ```
+2. Create `app/Filament/Resources/PageResource.php`
+    ```php
+    <?php
+    
+    namespace App\Filament\Resources;
+    
+    use RalphJSmit\Filament\SEO\SEO;
+    use Beier\FilamentPages\Filament\Resources\FilamentPageResource;
+    
+    class PageResource extends FilamentPageResource
+    {
+        public static function insertAfterSecondaryColumnSchema(): array
+        {
+            return [
+                SEO::make(),
+            ];
+        }
+    }
+    ```
+3. Define Model and Resource in `config/filament-pages.php`
+   ```php
+   return [
+       'filament' => [
+            'resource' => \App\Filament\Resources\PageResource::class,
+            'model' => \App\Models\FilamentPage::class,
+       ],
+   ];
+   ```
+
+4. If necessary, clear application caches for the Service Locator to load your resource:
+   
+   `$ php artisan cache:clear`
 
 ## Testing
 

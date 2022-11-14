@@ -9,6 +9,7 @@ use Beier\FilamentPages\Filament\Resources\FilamentPageResource\Pages\ListFilame
 use Beier\FilamentPages\Models\FilamentPage;
 use Carbon\Carbon;
 use Filament\Forms\Components\Card;
+use Filament\Forms\Components\Component;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\Group;
 use Filament\Forms\Components\Hidden;
@@ -76,58 +77,12 @@ class FilamentPageResource extends Resource
             ->schema([
                 Group::make()
                     ->schema([
-                        Card::make()
-                            ->columns(2)
-                            ->schema([
-                                TextInput::make('title')
-                                    ->label(__('filament-pages::filament-pages.filament.form.title.label'))
-                                    ->columnSpan(1)
-                                    ->required()
-                                    ->lazy()
-                                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
-
-                                TextInput::make('slug')
-                                    ->label(__('filament-pages::filament-pages.filament.form.slug.label'))
-                                    ->columnSpan(1)
-                                    ->required()
-                                    ->unique(FilamentPage::class, 'slug', ignoreRecord: true),
-
-                            ]),
+                        static::getPrimaryColumnSchema(),
                         ...static::getTemplateSchemas(),
                     ])
                     ->columnSpan(['lg' => 7]),
 
-                Card::make()
-                    ->schema([
-                        Select::make('data.template')
-                            ->reactive()
-                            ->afterStateUpdated(fn (string $context, $state, callable $set) => $set('data.templateName', Str::snake(self::getTemplateName($state))))
-                            ->afterStateHydrated(fn (string $context, $state, callable $set) => $set('data.templateName', Str::snake(self::getTemplateName($state))))
-                            ->options(static::getTemplates()),
-
-                        Hidden::make('data.templateName')
-                            ->reactive(),
-
-                        DatePicker::make('published_at')
-                            ->label(__('filament-pages::filament-pages.filament.form.published_at.label'))
-                            ->displayFormat(__('filament-pages::filament-pages.filament.form.published_at.displayFormat'))
-                            ->default(now()),
-
-                        DatePicker::make('published_until')
-                            ->label(__('filament-pages::filament-pages.filament.form.published_until.label'))
-                            ->displayFormat(__('filament-pages::filament-pages.filament.form.published_until.displayFormat')),
-
-                        Placeholder::make('created_at')
-                            ->label(__('filament-pages::filament-pages.filament.form.created_at.label'))
-                            ->hidden(fn (?FilamentPage $record) => $record === null)
-                            ->content(fn (FilamentPage $record): string => $record->created_at->diffForHumans()),
-
-                        Placeholder::make('updated_at')
-                            ->label(__('filament-pages::filament-pages.filament.form.updated_at.label'))
-                            ->hidden(fn (?FilamentPage $record) => $record === null)
-                            ->content(fn (FilamentPage $record): string => $record->updated_at->diffForHumans()),
-                    ])
-                    ->columnSpan(['lg' => 2]),
+                static::getSecondaryColumnSchema(),
 
             ])
             ->columns([
@@ -210,6 +165,85 @@ class FilamentPageResource extends Resource
             ->bulkActions([
                 DeleteBulkAction::make(),
             ]);
+    }
+
+    public static function getPrimaryColumnSchema(): Component
+    {
+        return Card::make()
+            ->columns(2)
+            ->schema([
+                ...static::insertBeforePrimaryColumnSchema(),
+                TextInput::make('title')
+                    ->label(__('filament-pages::filament-pages.filament.form.title.label'))
+                    ->columnSpan(1)
+                    ->required()
+                    ->lazy()
+                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $context === 'create' ? $set('slug', Str::slug($state)) : null),
+
+                TextInput::make('slug')
+                    ->label(__('filament-pages::filament-pages.filament.form.slug.label'))
+                    ->columnSpan(1)
+                    ->required()
+                    ->unique(FilamentPage::class, 'slug', ignoreRecord: true),
+                ...static::insertAfterPrimaryColumnSchema(),
+            ]);
+    }
+
+    public static function getSecondaryColumnSchema(): Component
+    {
+        return Card::make()
+            ->schema([
+                ...static::insertBeforeSecondaryColumnSchema(),
+                Select::make('data.template')
+                    ->reactive()
+                    ->afterStateUpdated(fn (string $context, $state, callable $set) => $set('data.templateName', Str::snake(self::getTemplateName($state))))
+                    ->afterStateHydrated(fn (string $context, $state, callable $set) => $set('data.templateName', Str::snake(self::getTemplateName($state))))
+                    ->options(static::getTemplates()),
+
+                Hidden::make('data.templateName')
+                    ->reactive(),
+
+                DatePicker::make('published_at')
+                    ->label(__('filament-pages::filament-pages.filament.form.published_at.label'))
+                    ->displayFormat(__('filament-pages::filament-pages.filament.form.published_at.displayFormat'))
+                    ->default(now()),
+
+                DatePicker::make('published_until')
+                    ->label(__('filament-pages::filament-pages.filament.form.published_until.label'))
+                    ->displayFormat(__('filament-pages::filament-pages.filament.form.published_until.displayFormat')),
+
+                Placeholder::make('created_at')
+                    ->label(__('filament-pages::filament-pages.filament.form.created_at.label'))
+                    ->hidden(fn (?FilamentPage $record) => $record === null)
+                    ->content(fn (FilamentPage $record): string => $record->created_at->diffForHumans()),
+
+                Placeholder::make('updated_at')
+                    ->label(__('filament-pages::filament-pages.filament.form.updated_at.label'))
+                    ->hidden(fn (?FilamentPage $record) => $record === null)
+                    ->content(fn (FilamentPage $record): string => $record->updated_at->diffForHumans()),
+                ...static::insertAfterSecondaryColumnSchema(),
+            ])
+            ->columnSpan(['lg' => 2]);
+    }
+
+    public static function insertBeforePrimaryColumnSchema(): array
+    {
+        return [];
+    }
+
+    public static function insertAfterPrimaryColumnSchema(): array
+    {
+        return [];
+    }
+
+    public static function insertBeforeSecondaryColumnSchema(): array
+    {
+        return [];
+    }
+
+    public static function insertAfterSecondaryColumnSchema(): array
+    {
+        return [];
     }
 
     /**
