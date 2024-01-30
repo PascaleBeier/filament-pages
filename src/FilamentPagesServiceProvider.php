@@ -5,11 +5,11 @@ namespace Beier\FilamentPages;
 use Beier\FilamentPages\Contracts\Renderer;
 use Beier\FilamentPages\Filament\Resources\FilamentPageResource;
 use Beier\FilamentPages\Renderer\SimplePageRenderer;
-use Filament\ServiceProvider as FilamentServiceProvider;
+use Beier\FilamentPages\PluginServiceProvider;
 use Spatie\LaravelPackageTools\Commands\InstallCommand;
 use Spatie\LaravelPackageTools\Package;
 
-class FilamentPagesServiceProvider extends FilamentServiceProvider
+class FilamentPagesServiceProvider extends PluginServiceProvider
 {
     public static string $name = 'filament-pages';
 
