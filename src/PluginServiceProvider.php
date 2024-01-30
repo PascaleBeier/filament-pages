@@ -94,7 +94,7 @@ abstract class PluginServiceProvider extends PackageServiceProvider
 
         foreach ($this->getResources() as $resource) {
             foreach ($resource::getPages() as $page) {
-                Livewire::component($page['class']::getName(), $page['class']);
+                Livewire::component($page->class::getName(), $page->class);
             }
 
             foreach ($resource::getRelations() as $relation) {
